@@ -19,7 +19,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         super.viewDidLoad()
         //sceneView.scene = SCNScene()
         sceneView.delegate = self
-        sceneView.debugOptions = [.showFeaturePoints, .showWorldOrigin]
+        //sceneView.debugOptions = [.showFeaturePoints, .showWorldOrigin]
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -36,12 +36,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         guard let frame = self.sceneView.pointOfView else{
             return
         }
-        //let camera = frame.camera
         let transform = frame.transform
         let orientation = SCNVector3(-transform.m31, -transform.m32, -transform.m33)
         let location = SCNVector3(transform.m41, transform.m42, transform.m43)
-        //let eulerAngles = SCNVector3(camera.eulerAngles.x, camera.eulerAngles.y, camera.eulerAngles.z)
-        //print("Euler angles are is x:\(eulerAngles.x), y: \(eulerAngles.y), z: \(eulerAngles.z)")
         let position = orientation + location
         DispatchQueue.main.async {
             if self.drawbtn.isHighlighted{
@@ -50,7 +47,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 let sphereNode = SCNNode(geometry: sphere)
                 
                 sphereNode.position = position
-                //sphereNode.eulerAngles = eulerAngles
                 sphereNode.geometry?.firstMaterial?.diffuse.contents = UIColor.orange
                 
                 
@@ -58,7 +54,18 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 self.sceneView.scene.rootNode.addChildNode(sphereNode)
                 
             } else{
+                let pointer = SCNNode(geometry: SCNSphere(radius: 0.01))
+                pointer.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
+                pointer.position = position
+                pointer.name = "Pointer"
                 
+                self.sceneView.scene.rootNode.enumerateChildNodes({ (node, _) in
+                    if node.name == "Pointer"{
+                        node.removeFromParentNode()
+                    }
+                })
+                
+                self.sceneView.scene.rootNode.addChildNode(pointer)
             }
         }
     }
