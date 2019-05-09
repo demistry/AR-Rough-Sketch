@@ -42,14 +42,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let position = orientation + location
         DispatchQueue.main.async {
             if self.drawbtn.isHighlighted{
-                print("Button pressed")
+                print("Button pressed to draw")
                 let sphere = SCNSphere(radius: 0.03)
                 let sphereNode = SCNNode(geometry: sphere)
                 
                 sphereNode.position = position
                 sphereNode.geometry?.firstMaterial?.diffuse.contents = UIColor.orange
-                
-                
                 
                 self.sceneView.scene.rootNode.addChildNode(sphereNode)
                 
